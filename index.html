@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html ng-app="mp3Player">
+<head>
+    <title> Mp3-player with angular.js </title>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" href="vendor/normalize.css"/>
+    <link rel="stylesheet" href="css/default.css"/>
+</head>
+<body>
+
+<div ng-controller="playerCtrl">
+    <!-- slider directive managing the track slider -->
+    <div animate-track-slider>
+
+        <!-- horizontal and vertical slider from the components.js -->
+        <div id="hslider" class="slider hslider"></div>
+
+        <div style="padding: 20px"></div>
+
+        <div id="vslider" class="slider vslider"></div>
+
+        <div style="padding: 20px"></div>
+
+        <!-- display current- and absolute track time -->
+        <div>Track time: <span class="trackSlider"> {{currentTrackTime}} of {{trackDuration}} </span></div>
+        <!-- display volume on slider and with numbers -->
+        <div droppable>Volume: <span class="volumeSlider"> 0.1 </span></div>
+    </div>
+
+    <!-- droppable and draggable directives ng-repeat displays all track in trackList
+        set active class to list element, if clicked and call the play-function to play the tune
+        display genre and url if track is active -->
+    <div  id="trackList"  ng-repeat="track in playList track by $index">
+        <div id="{{$index}}" draggable droppable
+             ng-class="{'active': track.active}"
+             ng-dblclick="mp3Player.actualTrackIdx = $index; mp3Player.playTrack()"
+             ng-attr-title="{{track.active}}" >
+            {{ $index }} {{ track.title }} : {{ track.artist }}
+        <a ng-show="!track.active"></a>
+        <a ng-hide="!track.active" ng-class="{'active': track.active}"> : {{ track.album }} : {{track.year}}</a>
+        </div>
+    </div>
+
+    <!-- show hover state. Call appropriate functions on button-click. Toggle state -->
+    <button title="play" ng-click="mp3Player.playTrack()" ng-hide="mp3Player.playing">PLAY</button>
+    <button title="pause" ng-click="mp3Player.pauseTrack()" ng-show="mp3Player.playing">PAUSE</button>
+    <button title="stop" ng-click="mp3Player.stopTrack();"> STOP </button>
+    <button title="repeat" ng-click="mp3Player._shouldRepeat = !mp3Player._shouldRepeat" ng-class="{'active': mp3Player._shouldRepeat}"> REPEAT </button>
+    <button title="shuffle" ng-click="mp3Player.shuffleTracks(); mp3Player._shouldShuffle = !mp3Player._shouldShuffle" ng-class="{'active': !mp3Player._shouldShuffle}"> SHUFFLE </button>
+    <button title="previous" ng-mouseover="mp3Player.showActualState()" ng-click="mp3Player.prevTrack(); "> PREVIOUS </button>
+    <button title="next" ng-mouseover="mp3Player.showActualState()" ng-click="mp3Player.nextTrack();"> NEXT </button>
+</div>
+
+<script src="vendor/angularjs.js"></script>
+<script src="vendor/jquery-2.1.0.js"></script>
+<script src="vendor/angular-route.js"></script>
+<script src="js/app.js"></script>
+<script src="js/services/trackStorage.js"></script>
+<script src="js/services/sliderStorage.js"></script>
+<script src="js/services/audioElementProvider.js"></script>
+<script src="js/controllers/mp3PlayerController.js"></script>
+<script src="js/directives/animateTrackSlider.js"></script>
+<script src="js/directives/dragAndDrop.js"></script>
+<script src="js/components.js"></script>
+</body>
+</html>
